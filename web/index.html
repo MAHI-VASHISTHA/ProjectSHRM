@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smart Hostel Room Allocation</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="brand">
+          <div class="brand__mark">SH</div>
+          <div class="brand__text">
+            <div class="brand__title">Smart Hostel</div>
+            <div class="brand__subtitle">Room allocation system</div>
+          </div>
+        </div>
+        <nav class="tabs" role="tablist" aria-label="Screens">
+          <button class="tab is-active" role="tab" aria-selected="true" data-screen="add">Add Room</button>
+          <button class="tab" role="tab" aria-selected="false" data-screen="rooms">View All Rooms</button>
+          <button class="tab" role="tab" aria-selected="false" data-screen="search">Search & Allocate</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="screen is-active" data-screen="add">
+        <div class="grid">
+          <div class="card">
+            <h2>Add Room</h2>
+            <p class="muted">Create a new hostel room with capacity and facilities.</p>
+
+            <form id="addRoomForm" class="form">
+              <div class="field">
+                <label for="roomNo">Room number</label>
+                <input id="roomNo" name="roomNo" type="text" placeholder="e.g. 105" required />
+              </div>
+
+              <div class="field">
+                <label for="capacity">Capacity (students)</label>
+                <input id="capacity" name="capacity" type="number" min="1" placeholder="e.g. 2" required />
+              </div>
+
+              <div class="field">
+                <label>Facilities</label>
+                <div class="checks">
+                  <label class="check">
+                    <input id="hasAC" type="checkbox" />
+                    <span>AC</span>
+                  </label>
+                  <label class="check">
+                    <input id="hasWashroom" type="checkbox" />
+                    <span>Attached washroom</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-primary" type="submit">Save room</button>
+                <button class="btn" type="button" id="addRoomReset">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <h2>Output</h2>
+            <p class="muted">System messages and results appear here.</p>
+            <div class="output" id="outputPanel" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="rooms">
+        <div class="card">
+          <div class="row">
+            <div>
+              <h2>All Rooms</h2>
+              <p class="muted">List of rooms currently available in the system.</p>
+            </div>
+            <div class="row__actions">
+              <button class="btn" type="button" id="refreshRoomsBtn">Refresh</button>
+            </div>
+          </div>
+
+          <div class="tableWrap">
+            <table class="table" aria-label="Rooms list">
+              <thead>
+                <tr>
+                  <th>Room No</th>
+                  <th class="num">Capacity</th>
+                  <th>AC</th>
+                  <th>Washroom</th>
+                </tr>
+              </thead>
+              <tbody id="roomsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="search">
+        <div class="grid">
+          <div class="card">
+            <h2>Search Rooms</h2>
+            <p class="muted">Filter rooms by minimum capacity and facility requirements.</p>
+
+            <form id="searchForm" class="form">
+              <div class="field">
+                <label for="minCapacity">Minimum capacity</label>
+                <input id="minCapacity" type="number" min="1" value="1" required />
+              </div>
+
+              <div class="field">
+                <label>Facilities required</label>
+                <div class="checks">
+                  <label class="check">
+                    <input id="searchNeedsAC" type="checkbox" />
+                    <span>AC</span>
+                  </label>
+                  <label class="check">
+                    <input id="searchNeedsWashroom" type="checkbox" />
+                    <span>Attached washroom</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-primary" type="submit">Search</button>
+                <button class="btn" type="button" id="searchClearBtn">Clear</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <h2>Allocate Room</h2>
+            <p class="muted">Allocate the smallest room that satisfies all conditions.</p>
+
+            <form id="allocateForm" class="form">
+              <div class="field">
+                <label for="students">Students</label>
+                <input id="students" type="number" min="1" placeholder="e.g. 3" required />
+              </div>
+
+              <div class="field">
+                <label>Facilities required</label>
+                <div class="checks">
+                  <label class="check">
+                    <input id="allocNeedsAC" type="checkbox" />
+                    <span>AC</span>
+                  </label>
+                  <label class="check">
+                    <input id="allocNeedsWashroom" type="checkbox" />
+                    <span>Attached washroom</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-success" type="submit">Allocate best room</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card mt">
+          <div class="row">
+            <div>
+              <h2>Results</h2>
+              <p class="muted">Search results and allocation outcome.</p>
+            </div>
+          </div>
+
+          <div class="split">
+            <div class="panel">
+              <div class="panel__title">Search results</div>
+              <div class="tableWrap">
+                <table class="table" aria-label="Search results">
+                  <thead>
+                    <tr>
+                      <th>Room No</th>
+                      <th class="num">Capacity</th>
+                      <th>AC</th>
+                      <th>Washroom</th>
+                    </tr>
+                  </thead>
+                  <tbody id="searchTbody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel__title">Allocation output</div>
+              <div class="output" id="allocationOutput" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <span class="muted">Backend: Java HttpServer • Frontend: HTML/CSS/JS</span>
+      </div>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+
